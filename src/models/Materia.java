@@ -1,30 +1,35 @@
 package models;
 
 public class Materia {
-	
+
 	private int id;
 	private String nombre;
 	private String acronimo;
-	private int curso_id;
-	private String text;
+	private Curso curso;
 
 	public Materia() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
-	public Materia(int id, String nombre, String acronimo, int curso_id, String text) {
+	public Materia(int id, String nombre, String acronimo, Curso curso) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.acronimo = acronimo;
-		this.curso_id = curso_id;
-		this.text = text;
+		this.curso = curso;
+	}
+
+	public Curso getCurso() {
+		return curso;
+	}
+
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
 
 	@Override
 	public String toString() {
-		return "Materia [id=" + id + ", nombre=" + nombre + ", acronimo=" + acronimo + ", curso_id=" + curso_id
-				+ ", text=" + text + "]";
+		return "Materia [id=" + id + ", nombre=" + nombre + ", acronimo=" + acronimo + ", curso=" + curso + "]";
 	}
 
 	public int getId() {
@@ -39,14 +44,6 @@ public class Materia {
 		return nombre;
 	}
 
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -59,14 +56,5 @@ public class Materia {
 		this.acronimo = acronimo;
 	}
 
-	public int getCurso_id() {
-		return curso_id;
-	}
-
-	public void setCurso_id(int curso_id) {
-		this.curso_id = curso_id;
-	}
-	
-	
 
 }

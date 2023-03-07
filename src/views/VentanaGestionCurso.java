@@ -21,7 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import controllers.ControladorCurso;
+import controllers.ControladorMateria;
 import models.Curso;
+import models.Materia;
 
 public class VentanaGestionCurso extends JPanel {
 
@@ -112,12 +114,6 @@ public class VentanaGestionCurso extends JPanel {
 		btnCargarPrimerRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarPrimerRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 
 			}
 		});
@@ -127,12 +123,7 @@ public class VentanaGestionCurso extends JPanel {
 		btnCargarAnteriorRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarAnteriorRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 		panel.add(btnCargarAnteriorRegistro);
@@ -141,12 +132,6 @@ public class VentanaGestionCurso extends JPanel {
 		btnCargarSiguienteRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarSiguienteRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 
 			}
 		});
@@ -156,12 +141,6 @@ public class VentanaGestionCurso extends JPanel {
 		btnCargarUltimoRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cargarUltimoRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 
 			}
 		});
@@ -189,24 +168,13 @@ public class VentanaGestionCurso extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				delete();
 				cargarAnteriorRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 
 		panel.add(btnEliminar);
 
 		cargarPrimerRegistro();
-		try {
-			botones();
-		} catch (NumberFormatException | SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
 	}
 
@@ -226,47 +194,37 @@ public class VentanaGestionCurso extends JPanel {
 	}
 
 	private void cargarAnteriorRegistro() {
-		Curso curs = new Curso();
-		curs.setId(Integer.parseInt(this.jtfId.getText()));
-		Curso curs2 = new controllers.ControladorCurso().cargarAnteriorRegistro(curs);
-		if (curs2 != null) {
-			this.jtfId.setText(Integer.toString(curs2.getId()));
-
-			this.jtfDesc.setText(curs2.getDescri());
-		}
+		Curso c = new Curso();
+		c.setId(Integer.parseInt(this.jtfId.getText()));
+		mostrarRegistro(ControladorCurso.cargarAnteriorRegistro(c));
 
 	}
 
 	private void cargarSiguienteRegistro() {
-		Curso curs = new Curso();
-		curs.setId(Integer.parseInt(this.jtfId.getText()));
-		Curso curs2 = new controllers.ControladorCurso().cargarSiguienteRegistro(curs);
-		if (curs2 != null) {
-			this.jtfId.setText(Integer.toString(curs2.getId()));
-
-			this.jtfDesc.setText(curs2.getDescri());
-		}
+		Curso c = new Curso();
+		c.setId(Integer.parseInt(this.jtfId.getText()));
+		mostrarRegistro(ControladorCurso.cargarSiguienteRegistro(c));
 
 	}
 
 	private void cargarPrimerRegistro() {
-		Curso curs = new controllers.ControladorCurso().cargarPrimerRegistro();
-		if (curs != null) {
-			this.jtfId.setText(Integer.toString(curs.getId()));
-
-			this.jtfDesc.setText(curs.getDescri());
-		}
+		mostrarRegistro(ControladorCurso.cargarPrimerRegistro());
 	}
 
 	private void cargarUltimoRegistro() {
-		Curso curs = new controllers.ControladorCurso().cargarUltimoRegistro();
+		mostrarRegistro(ControladorCurso.cargarUltimoRegistro());
 
-		if (curs != null) {
-			this.jtfId.setText(Integer.toString(curs.getId()));
+	}
 
-			this.jtfDesc.setText(curs.getDescri());
+	private void mostrarRegistro(Curso curs) {
+		this.jtfId.setText(Integer.toString(curs.getId()));
+		this.jtfDesc.setText(curs.getDescri());
+		try {
+			botones();
+		} catch (NumberFormatException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
 	}
 
 	private boolean haySiguienteRegistro() {

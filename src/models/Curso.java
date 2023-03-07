@@ -33,8 +33,17 @@ public class Curso {
 
 	@Override
 	public String toString() {
-		return "Curso [id=" + id + ", descri=" + descri + "]";
+		return "Curso " + descri;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return this.id == ((Curso) obj).id;
+	}
+	
+	
+	
+	
 	
 
 }

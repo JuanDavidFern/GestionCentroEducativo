@@ -51,6 +51,7 @@ public class ControladorEstudiante {
 			ps.executeUpdate();
 
 			ps.close();
+			conn.close();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -81,6 +82,7 @@ public class ControladorEstudiante {
 		ps.executeUpdate();
 
 		ps.close();
+		conn.close();
 
 	}
 
@@ -99,6 +101,7 @@ public class ControladorEstudiante {
 
 			ps.close();
 			conn.close();
+			
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -110,29 +113,31 @@ public class ControladorEstudiante {
 	/**
 	 * 
 	 */
-	public Estudiante cargarAnteriorRegistro(Estudiante estu) {
+	public static Estudiante cargarAnteriorRegistro(Estudiante estu) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
 			PreparedStatement ps = conn.prepareStatement("select * from centroeducativo.estudiante where id < "
 					+ estu.getId() + " order by id desc limit 1");
 			ResultSet rs = ps.executeQuery();
+			Estudiante e = new Estudiante();
 			if (rs.next()) {
 
-				estu.setId(rs.getInt(1));
-				estu.setNombre(rs.getString(2));
-				estu.setApellido1(rs.getString(3));
-				estu.setApellido2(rs.getString(4));
-				estu.setDni(rs.getString(5));
-				estu.setDireccion(rs.getString(6));
-				estu.setEmail(rs.getString(7));
-				estu.setTelefono(rs.getString(8));
+				e.setId(rs.getInt(1));
+				e.setNombre(rs.getString(2));
+				e.setApellido1(rs.getString(3));
+				e.setApellido2(rs.getString(4));
+				e.setDni(rs.getString(5));
+				e.setDireccion(rs.getString(6));
+				e.setEmail(rs.getString(7));
+				e.setTelefono(rs.getString(8));
+				rs.close();
+				ps.close();
+				conn.close();
+				return e;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return estu;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -143,30 +148,31 @@ public class ControladorEstudiante {
 	/**
 	 * 
 	 */
-	public Estudiante cargarSiguienteRegistro(Estudiante estu) {
+	public static Estudiante cargarSiguienteRegistro(Estudiante estu) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
 			PreparedStatement ps = conn.prepareStatement(
 					"select * from centroeducativo.estudiante where id > " + estu.getId() + " order by id limit 1");
 			ResultSet rs = ps.executeQuery();
+			Estudiante e = new Estudiante();
 			if (rs.next()) {
 
-				estu.setId(rs.getInt(1));
-
-				estu.setNombre(rs.getString(2));
-				estu.setApellido1(rs.getString(3));
-				estu.setApellido2(rs.getString(4));
-				estu.setDni(rs.getString(5));
-				estu.setDireccion(rs.getString(6));
-				estu.setEmail(rs.getString(7));
-				estu.setTelefono(rs.getString(8));
+				e.setId(rs.getInt(1));
+				e.setNombre(rs.getString(2));
+				e.setApellido1(rs.getString(3));
+				e.setApellido2(rs.getString(4));
+				e.setDni(rs.getString(5));
+				e.setDireccion(rs.getString(6));
+				e.setEmail(rs.getString(7));
+				e.setTelefono(rs.getString(8));
+				rs.close();
+				ps.close();
+				conn.close();
+				return e;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return estu;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -177,7 +183,7 @@ public class ControladorEstudiante {
 	/**
 	 * 
 	 */
-	public Estudiante cargarUltimoRegistro() {
+	public static Estudiante cargarUltimoRegistro() {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 			Estudiante estu = null;
@@ -196,12 +202,13 @@ public class ControladorEstudiante {
 				estu.setDireccion(rs.getString(6));
 				estu.setEmail(rs.getString(7));
 				estu.setTelefono(rs.getString(8));
+				rs.close();
+				ps.close();
+				conn.close();
+				return estu;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return estu;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -209,7 +216,7 @@ public class ControladorEstudiante {
 		return null;
 	}
 
-	public Estudiante cargarPrimerRegistro() {
+	public static Estudiante cargarPrimerRegistro() {
 
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
@@ -229,12 +236,13 @@ public class ControladorEstudiante {
 				estu.setDireccion(rs.getString(6));
 				estu.setEmail(rs.getString(7));
 				estu.setTelefono(rs.getString(8));
+				rs.close();
+				ps.close();
+				conn.close();
+				return estu;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return estu;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,6 +264,7 @@ public class ControladorEstudiante {
 		}
 		ps.close();
 		rs.close();
+		conn.close();
 		return 1;
 
 	}
@@ -271,6 +280,7 @@ public class ControladorEstudiante {
             if (rs.next()) {
                 maxID = rs.getInt(1);
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -289,6 +299,7 @@ public class ControladorEstudiante {
             if (rs.next()) {
                 firstID = rs.getInt(1);
             }
+            conn.close();
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

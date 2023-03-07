@@ -26,7 +26,6 @@ public class ControladorProfesor {
 			e.printStackTrace();
 		}
 
-
 	}
 
 	/**
@@ -35,26 +34,26 @@ public class ControladorProfesor {
 	private static void guardarNuevo(Profesor prof) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
-			
-				PreparedStatement ps2 = conn.prepareStatement(
-						"insert into centroeducativo.profesor set id = ?, nombre = ?, apellido1 = ?, apellido2 = ?, dni = ?, "
-								+ "direccion = ?, email = ?,telefono = ? ");
 
-				ps2.setInt(1, nextId());
+			PreparedStatement ps2 = conn.prepareStatement(
+					"insert into centroeducativo.profesor set id = ?, nombre = ?, apellido1 = ?, apellido2 = ?, dni = ?, "
+							+ "direccion = ?, email = ?,telefono = ? ");
 
-				ps2.setString(2, prof.getNombre());
-				ps2.setString(3, prof.getApellido1());
-				ps2.setString(4, prof.getApellido2());
-				ps2.setString(5, prof.getDni());
-				ps2.setString(6, prof.getDireccion());
-				ps2.setString(7, prof.getEmail());
-				ps2.setString(8, prof.getTelefono());
+			ps2.setInt(1, nextId());
 
-				ps2.executeUpdate();
+			ps2.setString(2, prof.getNombre());
+			ps2.setString(3, prof.getApellido1());
+			ps2.setString(4, prof.getApellido2());
+			ps2.setString(5, prof.getDni());
+			ps2.setString(6, prof.getDireccion());
+			ps2.setString(7, prof.getEmail());
+			ps2.setString(8, prof.getTelefono());
 
-				ps2.close();
+			ps2.executeUpdate();
 
-			
+			ps2.close();
+			conn.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,7 +83,7 @@ public class ControladorProfesor {
 		ps.executeUpdate();
 
 		ps.close();
-
+		conn.close();
 	}
 
 	/**
@@ -113,30 +112,32 @@ public class ControladorProfesor {
 	/**
 	 * 
 	 */
-	public Profesor cargarAnteriorRegistro(Profesor prof) {
+	public static Profesor cargarAnteriorRegistro(Profesor prof) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
 			PreparedStatement ps = conn.prepareStatement(
 					"select * from centroeducativo.profesor where id < " + prof.getId() + " order by id desc limit 1");
 			ResultSet rs = ps.executeQuery();
+			Profesor p = new Profesor();
 			if (rs.next()) {
 
-				prof.setId(rs.getInt(1));
+				p.setId(rs.getInt(1));
 
-				prof.setNombre(rs.getString(2));
-				prof.setApellido1(rs.getString(3));
-				prof.setApellido2(rs.getString(4));
-				prof.setDni(rs.getString(5));
-				prof.setDireccion(rs.getString(6));
-				prof.setEmail(rs.getString(7));
-				prof.setTelefono(rs.getString(8));
+				p.setNombre(rs.getString(2));
+				p.setApellido1(rs.getString(3));
+				p.setApellido2(rs.getString(4));
+				p.setDni(rs.getString(5));
+				p.setDireccion(rs.getString(6));
+				p.setEmail(rs.getString(7));
+				p.setTelefono(rs.getString(8));
+
+				rs.close();
+				ps.close();
+				conn.close();
+				return p;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return prof;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -147,30 +148,31 @@ public class ControladorProfesor {
 	/**
 	 * 
 	 */
-	public Profesor cargarSiguienteRegistro(Profesor prof) {
+	public static Profesor cargarSiguienteRegistro(Profesor prof) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
 			PreparedStatement ps = conn.prepareStatement(
 					"select * from centroeducativo.profesor where id > " + prof.getId() + " order by id limit 1");
 			ResultSet rs = ps.executeQuery();
+			Profesor p = new Profesor();
 			if (rs.next()) {
 
-				prof.setId(rs.getInt(1));
+				p.setId(rs.getInt(1));
 
-				prof.setNombre(rs.getString(2));
-				prof.setApellido1(rs.getString(3));
-				prof.setApellido2(rs.getString(4));
-				prof.setDni(rs.getString(5));
-				prof.setDireccion(rs.getString(6));
-				prof.setEmail(rs.getString(7));
-				prof.setTelefono(rs.getString(8));
+				p.setNombre(rs.getString(2));
+				p.setApellido1(rs.getString(3));
+				p.setApellido2(rs.getString(4));
+				p.setDni(rs.getString(5));
+				p.setDireccion(rs.getString(6));
+				p.setEmail(rs.getString(7));
+				p.setTelefono(rs.getString(8));
+
+				rs.close();
+				ps.close();
+				conn.close();
+				return p;
 			}
-
-			rs.close();
-			ps.close();
-			conn.close();
-			return prof;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -181,7 +183,7 @@ public class ControladorProfesor {
 	/**
 	 * 
 	 */
-	public Profesor cargarUltimoRegistro() {
+	public static Profesor cargarUltimoRegistro() {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 			Profesor prof = null;
@@ -213,7 +215,7 @@ public class ControladorProfesor {
 		return null;
 	}
 
-	public Profesor cargarPrimerRegistro() {
+	public static Profesor cargarPrimerRegistro() {
 
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
@@ -244,7 +246,6 @@ public class ControladorProfesor {
 		return null;
 	}
 
-	
 	/**
 	 * 
 	 */
@@ -259,44 +260,46 @@ public class ControladorProfesor {
 		}
 		ps.close();
 		rs.close();
+		conn.close();
 		return 1;
 
 	}
-	
+
 	public static int getMaxID() {
-        int maxID = 0;
-        try {
-        	conn = controllers.ConnectionManagerV1.getConexion();
-        	PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.profesor;");
+		int maxID = 0;
+		try {
+			conn = controllers.ConnectionManagerV1.getConexion();
+			PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.profesor;");
 
-            ResultSet rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                maxID = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return maxID;
-    }
+			if (rs.next()) {
+				maxID = rs.getInt(1);
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return maxID;
+	}
 
-    public static int getFirstID() {
-        int firstID = 0;
-        try {
-        	conn = controllers.ConnectionManagerV1.getConexion();
-        	PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.profesor;");
+	public static int getFirstID() {
+		int firstID = 0;
+		try {
+			conn = controllers.ConnectionManagerV1.getConexion();
+			PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.profesor;");
 
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                firstID = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return firstID;
-    }
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				firstID = rs.getInt(1);
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return firstID;
+	}
 
 }

@@ -10,7 +10,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 
+import controllers.ControladorMateria;
 import controllers.ControladorProfesor;
+import models.Materia;
 import models.Profesor;
 
 import java.awt.Insets;
@@ -311,12 +313,7 @@ public class VentanaGestionProfesor extends JPanel {
 		panel.add(btnEliminar);
 		
 		cargarPrimerRegistro();
-		try {
-			botones();
-		} catch (NumberFormatException | SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
 	}
 	
 	private void guardar() {
@@ -334,69 +331,46 @@ public class VentanaGestionProfesor extends JPanel {
 
 	}
 	
-	private void cargarAnteriorRegistro() {
-		Profesor prof = new Profesor();
-		prof.setId(Integer.parseInt(this.jtfid.getText()));
-		Profesor prof2 = new controllers.ControladorProfesor().cargarAnteriorRegistro(prof);
-		if (prof2 != null) {
-			this.jtfid.setText(Integer.toString(prof2.getId()));
-			this.jtfnombre.setText(prof2.getNombre());
-			this.jtfape1.setText(prof2.getApellido1());
-			this.jtfape2.setText(prof2.getApellido2());
-			this.jtfdni.setText(prof2.getDni());
-			this.jtfdirec.setText(prof2.getDireccion());
-			this.jtfemail.setText(prof2.getEmail());
-			this.jtftelef.setText(prof2.getTelefono());
-		}
-
-	}
-	
 	private void cargarSiguienteRegistro() {
 		Profesor prof = new Profesor();
 		prof.setId(Integer.parseInt(this.jtfid.getText()));
-		Profesor prof2 = new controllers.ControladorProfesor().cargarSiguienteRegistro(prof);
-		if (prof2 != null) {
-			this.jtfid.setText(Integer.toString(prof2.getId()));
-			this.jtfnombre.setText(prof2.getNombre());
-			this.jtfape1.setText(prof2.getApellido1());
-			this.jtfape2.setText(prof2.getApellido2());
-			this.jtfdni.setText(prof2.getDni());
-			this.jtfdirec.setText(prof2.getDireccion());
-			this.jtfemail.setText(prof2.getEmail());
-			this.jtftelef.setText(prof2.getTelefono());
-		}
+		mostrarRegistro(ControladorProfesor.cargarSiguienteRegistro(prof));
 
 	}
 
-	
+	private void cargarAnteriorRegistro() {
+		Profesor prof = new Profesor();
+		prof.setId(Integer.parseInt(this.jtfid.getText()));
+		mostrarRegistro(ControladorProfesor.cargarAnteriorRegistro(prof));
+
+	}
+
 	private void cargarUltimoRegistro() {
-		Profesor prof = new controllers.ControladorProfesor().cargarUltimoRegistro();
-		if (prof != null) {
-			this.jtfid.setText(Integer.toString(prof.getId()));
-			this.jtfnombre.setText(prof.getNombre());
-			this.jtfape1.setText(prof.getApellido1());
-			this.jtfape2.setText(prof.getApellido2());
-			this.jtfdni.setText(prof.getDni());
-			this.jtfdirec.setText(prof.getDireccion());
-			this.jtfemail.setText(prof.getEmail());
-			this.jtftelef.setText(prof.getTelefono());
-			
-		}
+		mostrarRegistro(ControladorProfesor.cargarUltimoRegistro());
+
+	}
+
+	private void cargarPrimerRegistro() {
+		mostrarRegistro(ControladorProfesor.cargarPrimerRegistro());
+
 	}
 	
-	private void cargarPrimerRegistro() {
-		Profesor prof = new controllers.ControladorProfesor().cargarPrimerRegistro();
-		if (prof != null) {
-			this.jtfid.setText(Integer.toString(prof.getId()));
-			this.jtfnombre.setText(prof.getNombre());
-			this.jtfape1.setText(prof.getApellido1());
-			this.jtfape2.setText(prof.getApellido2());
-			this.jtfdni.setText(prof.getDni());
-			this.jtfdirec.setText(prof.getDireccion());
-			this.jtfemail.setText(prof.getEmail());
-			this.jtftelef.setText(prof.getTelefono());
-			
+	private void mostrarRegistro(Profesor prof) {
+		this.jtfid.setText(Integer.toString(prof.getId()));
+		this.jtfnombre.setText(prof.getNombre());
+		this.jtfape1.setText(prof.getApellido1());
+		this.jtfape2.setText(prof.getApellido2());
+		this.jtfdni.setText(prof.getDni());
+		this.jtfdirec.setText(prof.getDireccion());
+		this.jtfemail.setText(prof.getEmail());
+		this.jtftelef.setText(prof.getTelefono());
+		try {
+			botones();
+		} catch (NumberFormatException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
 		
 	}
 	

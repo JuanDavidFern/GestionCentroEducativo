@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -12,7 +14,6 @@ import models.Curso;
 public class ControladorCurso {
 	private static Connection conn = null;
 
-	
 	public static void guardar(Curso curs) {
 		try {
 
@@ -26,39 +27,33 @@ public class ControladorCurso {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
+
 	/**
 	 * 
 	 */
 	private static void guardarNuevo(Curso curs) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
-			
-				PreparedStatement ps = conn
-						.prepareStatement("insert into centroeducativo.curso set id = ?, descripcion = ? ");
 
-				ps.setInt(1, nextId());
+			PreparedStatement ps = conn
+					.prepareStatement("insert into centroeducativo.curso set id = ?, descripcion = ? ");
 
-				ps.setString(2, curs.getDescri());
+			ps.setInt(1, nextId());
 
-				ps.executeUpdate();
+			ps.setString(2, curs.getDescri());
 
-				ps.close();
-				
-				
-				
-				
+			ps.executeUpdate();
 
-			
+			ps.close();
+			conn.close();
 
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/**
@@ -69,25 +64,25 @@ public class ControladorCurso {
 	private static void update(Curso curs) throws NumberFormatException, SQLException {
 		conn = controllers.ConnectionManagerV1.getConexion();
 		PreparedStatement ps = conn
-				.prepareStatement("update centroeducativo.curso set descripcion = ? where id ="
-						+ curs.getId());
-
+				.prepareStatement("update centroeducativo.curso set descripcion = ? where id =" + curs.getId());
 
 		ps.setString(1, curs.getDescri());
 
 		ps.executeUpdate();
 
 		ps.close();
-		
+		conn.close();
+
 	}
+
 	/**
 	 * 
 	 */
 	public static void delete(Curso curs) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement(
-					"delete from centroeducativo.curso where id = " + curs.getId());
+			PreparedStatement ps = conn
+					.prepareStatement("delete from centroeducativo.curso where id = " + curs.getId());
 			int conf = JOptionPane.showConfirmDialog(null, "¿Deseas eliminar el registro?");
 			if (conf == JOptionPane.YES_OPTION) {
 				ps.executeUpdate();
@@ -95,7 +90,7 @@ public class ControladorCurso {
 
 			ps.close();
 			conn.close();
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,24 +101,25 @@ public class ControladorCurso {
 	/**
 	 * 
 	 */
-	public Curso cargarAnteriorRegistro(Curso curs) {
+	public static Curso cargarAnteriorRegistro(Curso curs) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
 			PreparedStatement ps = conn.prepareStatement(
 					"select * from centroeducativo.curso where id < " + curs.getId() + " order by id desc limit 1");
 			ResultSet rs = ps.executeQuery();
+			Curso c = new Curso();
 			if (rs.next()) {
 
-				curs.setId(rs.getInt(1));
-
-				curs.setDescri(rs.getString(2));
+				c.setId(rs.getInt(1));
+				c.setDescri(rs.getString(2));
+				rs.close();
+				ps.close();
+				conn.close();
+				return c;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return curs;
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,24 +130,25 @@ public class ControladorCurso {
 	/**
 	 * 
 	 */
-	public Curso cargarSiguienteRegistro(Curso curs) {
+	public static Curso cargarSiguienteRegistro(Curso curs) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
 			PreparedStatement ps = conn.prepareStatement(
 					"select * from centroeducativo.curso where id > " + curs.getId() + " order by id limit 1");
 			ResultSet rs = ps.executeQuery();
+			Curso c = new Curso();
 			if (rs.next()) {
-
-				curs.setId(rs.getInt(1));
-
-				curs.setDescri(rs.getString(2));
+				
+				c.setId(rs.getInt(1));
+				c.setDescri(rs.getString(2));
+				
+				rs.close();
+				ps.close();
+				conn.close();
+				return c;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return curs;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -162,7 +159,7 @@ public class ControladorCurso {
 	/**
 	 * 
 	 */
-	public Curso cargarUltimoRegistro() {
+	public static Curso cargarUltimoRegistro() {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 			Curso curs = null;
@@ -173,14 +170,14 @@ public class ControladorCurso {
 
 				curs = new Curso();
 				curs.setId(rs.getInt(1));
-
 				curs.setDescri(rs.getString(2));
+
+				rs.close();
+				ps.close();
+				conn.close();
+				return curs;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return curs;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -188,7 +185,7 @@ public class ControladorCurso {
 		return null;
 	}
 
-	public Curso cargarPrimerRegistro() {
+	public static Curso cargarPrimerRegistro() {
 
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
@@ -199,14 +196,13 @@ public class ControladorCurso {
 
 				curs = new Curso();
 				curs.setId(rs.getInt(1));
-
 				curs.setDescri(rs.getString(2));
+				rs.close();
+				ps.close();
+				conn.close();
+				return curs;
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return curs;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -231,41 +227,51 @@ public class ControladorCurso {
 		return 1;
 
 	}
-	
+
 	public static int getMaxID() {
-        int maxID = 0;
-        try {
-        	conn = controllers.ConnectionManagerV1.getConexion();
-        	PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.curso;");
+		int maxID = 0;
+		try {
+			conn = controllers.ConnectionManagerV1.getConexion();
+			PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.curso;");
 
-            ResultSet rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                maxID = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return maxID;
-    }
+			if (rs.next()) {
+				maxID = rs.getInt(1);
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return maxID;
+	}
 
-    public static int getFirstID() {
-        int firstID = 0;
-        try {
-        	conn = controllers.ConnectionManagerV1.getConexion();
-        	PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.curso;");
+	public static int getFirstID() {
+		int firstID = 0;
+		try {
+			conn = controllers.ConnectionManagerV1.getConexion();
+			PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.curso;");
 
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				firstID = rs.getInt(1);
+			}
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return firstID;
+	}
 
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                firstID = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return firstID;
-    }
-
+	public static List<Curso> findAll() {
+		List<Curso> lc = new ArrayList<Curso>();
+		Curso c = cargarPrimerRegistro();
+		do {
+			lc.add(c);
+			c = cargarSiguienteRegistro(c);
+		} while (c != null);
+		return lc;
+	}
 }

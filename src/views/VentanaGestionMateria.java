@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,15 +14,17 @@ import java.awt.GridBagConstraints;
 import java.awt.Font;
 import javax.swing.JTextField;
 
+import controllers.ControladorCurso;
 import controllers.ControladorMateria;
+import models.Curso;
 import models.Materia;
 import javax.swing.JTextArea;
+import javax.swing.JComboBox;
 
 public class VentanaGestionMateria extends JPanel {
-	private JTextField jtfid;
-	private JTextField jtfnombre;
-	private JTextField jtfacro;
-	private JTextField jtfcursoid;
+	private JTextField jtfId;
+	private JTextField jtfNombre;
+	private JTextField jtfAcro;
 	private JButton btnCargarPrimerRegistro;
 	private JButton btnCargarAnteriorRegistro;
 	private JButton btnCargarSiguienteRegistro;
@@ -29,8 +32,8 @@ public class VentanaGestionMateria extends JPanel {
 	private JButton btnEliminar;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
-	private JTextArea textArea;
-	private JLabel lblNewLabel_5;
+	private JComboBox<Curso> jcb;
+	private JButton btnNewButton;
 
 	/**
 	 * Create the panel.
@@ -60,15 +63,15 @@ public class VentanaGestionMateria extends JPanel {
 		gbc_lblNewLabel_1.gridy = 1;
 		add(lblNewLabel_1, gbc_lblNewLabel_1);
 
-		jtfid = new JTextField();
+		jtfId = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 0);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 1;
-		add(jtfid, gbc_textField);
-		jtfid.setColumns(10);
-		this.jtfid.setEnabled(false);
+		add(jtfId, gbc_textField);
+		jtfId.setColumns(10);
+		this.jtfId.setEnabled(false);
 
 		JLabel lblNewLabel_2 = new JLabel("Nombre");
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
@@ -78,14 +81,14 @@ public class VentanaGestionMateria extends JPanel {
 		gbc_lblNewLabel_2.gridy = 2;
 		add(lblNewLabel_2, gbc_lblNewLabel_2);
 
-		jtfnombre = new JTextField();
+		jtfNombre = new JTextField();
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
 		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_1.gridx = 1;
 		gbc_textField_1.gridy = 2;
-		add(jtfnombre, gbc_textField_1);
-		jtfnombre.setColumns(10);
+		add(jtfNombre, gbc_textField_1);
+		jtfNombre.setColumns(10);
 
 		JLabel lblNewLabel_3 = new JLabel("Acrónimo");
 		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
@@ -95,14 +98,14 @@ public class VentanaGestionMateria extends JPanel {
 		gbc_lblNewLabel_3.gridy = 3;
 		add(lblNewLabel_3, gbc_lblNewLabel_3);
 
-		jtfacro = new JTextField();
+		jtfAcro = new JTextField();
 		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
 		gbc_textField_2.insets = new Insets(0, 0, 5, 0);
 		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_2.gridx = 1;
 		gbc_textField_2.gridy = 3;
-		add(jtfacro, gbc_textField_2);
-		jtfacro.setColumns(10);
+		add(jtfAcro, gbc_textField_2);
+		jtfAcro.setColumns(10);
 
 		JLabel lblNewLabel_4 = new JLabel("Curso_Id");
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
@@ -112,37 +115,22 @@ public class VentanaGestionMateria extends JPanel {
 		gbc_lblNewLabel_4.gridy = 4;
 		add(lblNewLabel_4, gbc_lblNewLabel_4);
 
-		jtfcursoid = new JTextField();
-		GridBagConstraints gbc_textField_3 = new GridBagConstraints();
-		gbc_textField_3.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_3.gridx = 1;
-		gbc_textField_3.gridy = 4;
-		add(jtfcursoid, gbc_textField_3);
-		jtfcursoid.setColumns(10);
-		
-		lblNewLabel_5 = new JLabel("Aiuda");
-		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5.gridx = 0;
-		gbc_lblNewLabel_5.gridy = 5;
-		add(lblNewLabel_5, gbc_lblNewLabel_5);
-
-		textArea = new JTextArea();
-		GridBagConstraints gbc_textArea = new GridBagConstraints();
-		gbc_textArea.insets = new Insets(0, 0, 5, 0);
-		gbc_textArea.fill = GridBagConstraints.BOTH;
-		gbc_textArea.gridx = 1;
-		gbc_textArea.gridy = 5;
-		add(textArea, gbc_textArea);
-		textArea.setEnabled(false);
+		jcb = new JComboBox<Curso>();
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 1;
+		gbc_comboBox.gridy = 4;
+		add(jcb, gbc_comboBox);
+		llenarJcb();
 
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridheight = 2;
 		gbc_panel.gridwidth = 2;
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 6;
+		gbc_panel.gridy = 5;
 		add(panel, gbc_panel);
 
 		btnCargarPrimerRegistro = new JButton("<<");
@@ -150,12 +138,7 @@ public class VentanaGestionMateria extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				cargarPrimerRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 		panel.add(btnCargarPrimerRegistro);
@@ -165,12 +148,7 @@ public class VentanaGestionMateria extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				cargarAnteriorRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 		panel.add(btnCargarAnteriorRegistro);
@@ -180,12 +158,7 @@ public class VentanaGestionMateria extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				cargarSiguienteRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 		panel.add(btnCargarSiguienteRegistro);
@@ -195,12 +168,7 @@ public class VentanaGestionMateria extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 
 				cargarUltimoRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 		panel.add(btnCargarUltimoRegistro);
@@ -216,11 +184,9 @@ public class VentanaGestionMateria extends JPanel {
 		btnNuevo = new JButton("Nuevo");
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jtfid.setText("0");
-				jtfnombre.setText("");
-				jtfacro.setText("");
-				jtfcursoid.setText("");
-				textArea.setText("");
+				jtfId.setText("0");
+				jtfNombre.setText("");
+				jtfAcro.setText("");
 
 			}
 		});
@@ -231,99 +197,98 @@ public class VentanaGestionMateria extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				delete();
 				cargarAnteriorRegistro();
-				try {
-					botones();
-				} catch (NumberFormatException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+
 			}
 		});
 		panel.add(btnEliminar);
 
+		btnNewButton = new JButton("Refresh");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				refrescar();
+			}
+		});
+
 		cargarPrimerRegistro();
-		this.textArea
-				.setText("Las Ids disponibles para curso Id son \n" + controllers.ControladorMateria.cursoSelect());
-		try {
-			botones();
-		} catch (NumberFormatException | SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		panel.add(btnNewButton);
+
+//		cargarPrimerRegistro();
 
 	}
 
 	private void guardar() {
 		Materia mat = new Materia();
-		mat.setId(Integer.parseInt(this.jtfid.getText()));
-		mat.setNombre(this.jtfnombre.getText());
-		mat.setAcronimo(this.jtfacro.getText());
-		mat.setCurso_id(Integer.parseInt(this.jtfcursoid.getText()));
+		mat.setId(Integer.parseInt(this.jtfId.getText()));
+		mat.setNombre(this.jtfNombre.getText());
+		mat.setAcronimo(this.jtfAcro.getText());
+		mat.setCurso((Curso) this.jcb.getSelectedItem());
 		ControladorMateria.guardar(mat);
-		this.textArea.setText(mat.getText());
+
+	}
+
+	private void refrescar() {
+		try {
+			jcb.removeAllItems();
+		} catch (Exception e) {
+			llenarJcb();
+		}
 
 	}
 
 	private void delete() {
 		Materia mat = new Materia();
-		mat.setId(Integer.parseInt(this.jtfid.getText()));
+		mat.setId(Integer.parseInt(this.jtfId.getText()));
 		controllers.ControladorMateria.delete(mat);
 	}
 
 	private void cargarSiguienteRegistro() {
 		Materia mat = new Materia();
-		mat.setId(Integer.parseInt(this.jtfid.getText()));
-		Materia mat2 = new controllers.ControladorMateria().cargarSiguienteRegistro(mat);
-		if (mat2 != null) {
-			this.jtfid.setText("" + (mat2.getId()));
-			this.jtfnombre.setText(mat2.getNombre());
-			this.jtfacro.setText(mat2.getAcronimo());
-			this.jtfcursoid.setText("" + (mat2.getCurso_id()));
-
-		}
+		mat.setId(Integer.parseInt(this.jtfId.getText()));
+		mostrarRegistro(ControladorMateria.cargarSiguienteRegistro(mat));
 
 	}
 
 	private void cargarAnteriorRegistro() {
 		Materia mat = new Materia();
-		mat.setId(Integer.parseInt(this.jtfid.getText()));
-		Materia mat2 = new controllers.ControladorMateria().cargarAnteriorRegistro(mat);
-		if (mat2 != null) {
-			this.jtfid.setText("" + (mat2.getId()));
-			this.jtfnombre.setText(mat2.getNombre());
-			this.jtfacro.setText(mat2.getAcronimo());
-			this.jtfcursoid.setText("" + (mat2.getCurso_id()));
-
-		}
+		mat.setId(Integer.parseInt(this.jtfId.getText()));
+		mostrarRegistro(ControladorMateria.cargarAnteriorRegistro(mat));
 
 	}
 
 	private void cargarUltimoRegistro() {
-		Materia mat = new controllers.ControladorMateria().cargarUltimoRegistro();
-		if (mat != null) {
-			this.jtfid.setText(Integer.toString(mat.getId()));
-			this.jtfnombre.setText(mat.getNombre());
-			this.jtfacro.setText(mat.getAcronimo());
-			this.jtfcursoid.setText(Integer.toString(mat.getCurso_id()));
-
-		}
+		mostrarRegistro(ControladorMateria.cargarUltimoRegistro());
 
 	}
 
 	private void cargarPrimerRegistro() {
-		Materia mat = new controllers.ControladorMateria().cargarPrimerRegistro();
-		if (mat != null) {
-			this.jtfid.setText(Integer.toString(mat.getId()));
-			this.jtfnombre.setText(mat.getNombre());
-			this.jtfacro.setText(mat.getAcronimo());
-			this.jtfcursoid.setText(Integer.toString(mat.getCurso_id()));
+		mostrarRegistro(ControladorMateria.cargarPrimerRegistro());
 
+	}
+
+	private void mostrarRegistro(Materia mat) {
+		this.jtfId.setText(Integer.toString(mat.getId()));
+		this.jtfNombre.setText(mat.getNombre());
+		this.jtfAcro.setText(mat.getAcronimo());
+		this.jcb.setSelectedItem(mat.getCurso());
+
+		try {
+			botones();
+		} catch (NumberFormatException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
+	private void llenarJcb() {
+		List<Curso> lc = ControladorCurso.findAll();
+		for (Curso curso : lc) {
+			jcb.addItem(curso);
+		}
+	}
+
 	private boolean haySiguienteRegistro() {
-		if (Integer.parseInt(this.jtfid.getText()) < controllers.ControladorMateria.getMaxID()) {
+		if (Integer.parseInt(this.jtfId.getText()) < controllers.ControladorMateria.getMaxID()) {
 			return true;
 		} else {
 			return false;
@@ -331,7 +296,7 @@ public class VentanaGestionMateria extends JPanel {
 	}
 
 	private boolean hayAnteriorRegistro() {
-		if (Integer.parseInt(this.jtfid.getText()) > controllers.ControladorMateria.getFirstID()) {
+		if (Integer.parseInt(this.jtfId.getText()) > controllers.ControladorMateria.getFirstID()) {
 			return true;
 		} else {
 			return false;
@@ -354,5 +319,16 @@ public class VentanaGestionMateria extends JPanel {
 			this.btnCargarUltimoRegistro.setEnabled(true);
 		}
 	}
+	
+
+//  private int index(JComboBox<Curso> jcb, Curso c) {
+//  Curso c1 = null;
+//  for (int i = 0; i < jcb.getItemCount(); i++) {
+//      c1 = jcb.getItemAt(i);
+//      if(c1.getId() == c.getId()) 
+//          return i;
+//  }
+//  return 0;
+//}
 
 }

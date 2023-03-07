@@ -14,11 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import controllers.ControladorEstudiante;
+import controllers.ControladorProfesor;
 import models.Estudiante;
+import models.Profesor;
 import models.Estudiante;
 
 public class VentanaGestionEstudiante extends JPanel {
-
 	private JTextField jtfid;
 	private JTextField jtfnombre;
 	private JTextField jtfape1;
@@ -334,69 +335,46 @@ public class VentanaGestionEstudiante extends JPanel {
 
 	}
 	
-	private void cargarAnteriorRegistro() {
-		Estudiante estu = new Estudiante();
-		estu.setId(Integer.parseInt(this.jtfid.getText()));
-		Estudiante estu2 = new controllers.ControladorEstudiante().cargarAnteriorRegistro(estu);
-		if (estu2 != null) {
-			this.jtfid.setText(Integer.toString(estu2.getId()));
-			this.jtfnombre.setText(estu2.getNombre());
-			this.jtfape1.setText(estu2.getApellido1());
-			this.jtfape2.setText(estu2.getApellido2());
-			this.jtfdni.setText(estu2.getDni());
-			this.jtfdirec.setText(estu2.getDireccion());
-			this.jtfemail.setText(estu2.getEmail());
-			this.jtftelef.setText(estu2.getTelefono());
-		}
-
-	}
-	
 	private void cargarSiguienteRegistro() {
 		Estudiante estu = new Estudiante();
 		estu.setId(Integer.parseInt(this.jtfid.getText()));
-		Estudiante estu2 = new controllers.ControladorEstudiante().cargarSiguienteRegistro(estu);
-		if (estu2 != null) {
-			this.jtfid.setText(Integer.toString(estu2.getId()));
-			this.jtfnombre.setText(estu2.getNombre());
-			this.jtfape1.setText(estu2.getApellido1());
-			this.jtfape2.setText(estu2.getApellido2());
-			this.jtfdni.setText(estu2.getDni());
-			this.jtfdirec.setText(estu2.getDireccion());
-			this.jtfemail.setText(estu2.getEmail());
-			this.jtftelef.setText(estu2.getTelefono());
-		}
+		mostrarRegistro(ControladorEstudiante.cargarSiguienteRegistro(estu));
 
 	}
 
-	
+	private void cargarAnteriorRegistro() {
+		Estudiante estu = new Estudiante();
+		estu.setId(Integer.parseInt(this.jtfid.getText()));
+		mostrarRegistro(ControladorEstudiante.cargarAnteriorRegistro(estu));
+
+	}
+
 	private void cargarUltimoRegistro() {
-		Estudiante estu = new controllers.ControladorEstudiante().cargarUltimoRegistro();
-		if (estu != null) {
-			this.jtfid.setText(Integer.toString(estu.getId()));
-			this.jtfnombre.setText(estu.getNombre());
-			this.jtfape1.setText(estu.getApellido1());
-			this.jtfape2.setText(estu.getApellido2());
-			this.jtfdni.setText(estu.getDni());
-			this.jtfdirec.setText(estu.getDireccion());
-			this.jtfemail.setText(estu.getEmail());
-			this.jtftelef.setText(estu.getTelefono());
-			
-		}
+		mostrarRegistro(ControladorEstudiante.cargarUltimoRegistro());
+
+	}
+
+	private void cargarPrimerRegistro() {
+		mostrarRegistro(ControladorEstudiante.cargarPrimerRegistro());
+
 	}
 	
-	private void cargarPrimerRegistro() {
-		Estudiante estu = new controllers.ControladorEstudiante().cargarPrimerRegistro();
-		if (estu != null) {
-			this.jtfid.setText(Integer.toString(estu.getId()));
-			this.jtfnombre.setText(estu.getNombre());
-			this.jtfape1.setText(estu.getApellido1());
-			this.jtfape2.setText(estu.getApellido2());
-			this.jtfdni.setText(estu.getDni());
-			this.jtfdirec.setText(estu.getDireccion());
-			this.jtfemail.setText(estu.getEmail());
-			this.jtftelef.setText(estu.getTelefono());
-			
+	private void mostrarRegistro(Estudiante estu) {
+		this.jtfid.setText(Integer.toString(estu.getId()));
+		this.jtfnombre.setText(estu.getNombre());
+		this.jtfape1.setText(estu.getApellido1());
+		this.jtfape2.setText(estu.getApellido2());
+		this.jtfdni.setText(estu.getDni());
+		this.jtfdirec.setText(estu.getDireccion());
+		this.jtfemail.setText(estu.getEmail());
+		this.jtftelef.setText(estu.getTelefono());
+		try {
+			botones();
+		} catch (NumberFormatException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
 		
 	}
 	
