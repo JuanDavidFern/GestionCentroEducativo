@@ -18,7 +18,6 @@ import controllers.ControladorCurso;
 import controllers.ControladorMateria;
 import models.Curso;
 import models.Materia;
-import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 
 public class VentanaGestionMateria extends JPanel {
@@ -107,7 +106,7 @@ public class VentanaGestionMateria extends JPanel {
 		add(jtfAcro, gbc_textField_2);
 		jtfAcro.setColumns(10);
 
-		JLabel lblNewLabel_4 = new JLabel("Curso_Id");
+		JLabel lblNewLabel_4 = new JLabel("Curso");
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
 		gbc_lblNewLabel_4.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);

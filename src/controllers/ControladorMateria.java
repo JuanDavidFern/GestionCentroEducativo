@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import models.Curso;
+import models.Estudiante;
 import models.Materia;
 
 public class ControladorMateria {
@@ -274,6 +277,16 @@ public class ControladorMateria {
 			e.printStackTrace();
 		}
 		return firstID;
+	}
+	
+	public static List<Materia> findAll() {
+		List<Materia> lc = new ArrayList<Materia>();
+		Materia ma = cargarPrimerRegistro();
+		do {
+			lc.add(ma);
+			ma = cargarSiguienteRegistro(ma);
+		} while (ma != null);
+		return lc;
 	}
 
 }

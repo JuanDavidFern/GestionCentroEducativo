@@ -94,9 +94,17 @@ public class Estudiante {
 
 	@Override
 	public String toString() {
-		return "Estudiante [id=" + id + ", nombre=" + nombre + ", apellido1=" + apellido1 + ", apellido2=" + apellido2
-				+ ", dni=" + dni + ", direccion=" + direccion + ", email=" + email + ", telefono=" + telefono + "]";
+		return "Estudiante nombre=" + nombre + ", apellido1=" + apellido1 + ", apellido2=" + apellido2
+				+ ", dni=" + dni + ", direccion=" + direccion + ", email=" + email + ", telefono=" + telefono;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return this.id == ((Estudiante)obj).id;
+	}
+	
+	
 	
 	
 

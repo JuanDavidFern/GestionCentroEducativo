@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -300,6 +302,16 @@ public class ControladorProfesor {
 			e.printStackTrace();
 		}
 		return firstID;
+	}
+	
+	public static List<Profesor> findAll() {
+		List<Profesor> lc = new ArrayList<Profesor>();
+		Profesor p = cargarPrimerRegistro();
+		do {
+			lc.add(p);
+			p = cargarSiguienteRegistro(p);
+		} while (p != null);
+		return lc;
 	}
 
 }

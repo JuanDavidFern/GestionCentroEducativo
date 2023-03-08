@@ -7,65 +7,22 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import models.Estudiante;
+import models.Materia;
+import models.Profesor;
 import models.ValoracionMateria;
 
 
 public class ControladorValoracionMateria {
-	
-private static Connection conn = null;
-	
-	public static String materiaSelect() {
-		String str = "";
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps;
-			ps = conn.prepareStatement("select id from centroeducativo.materia");
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				str += rs.getString(1) + "\n";
-				
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		
-		return str;
-	}
-	
-
-	
-	
-	public static boolean materiaExits(int id) throws SQLException {
-		conn = controllers.ConnectionManagerV1.getConexion();
-		PreparedStatement ps = conn.prepareStatement("select id from centroeducativo.materia where id = " + id);
-		ResultSet rs = ps.executeQuery();
-
-		if (rs.next()) {
-			ps.close();
-			rs.close();
-			return true;
-		}
-		ps.close();
-		rs.close();
-		return false;
-	}
+	private static Connection conn = null;
 
 	public static void guardar(ValoracionMateria val) {
 		try {
 
-			if (!exits(val.getCurso_id())) {
-				val.setText("La id curso no existe usa una de las siguientes \n" + cursoSelect());
-
+			if (val.getId() != 0) {
+				update(val);
 			} else {
-
-				if (val.getId() != 0) {
-					update(val);
-				} else {
-					guardarNuevo(val);
-				}
+				guardarNuevo(val);
 			}
 
 		} catch (SQLException e) {
@@ -83,18 +40,20 @@ private static Connection conn = null;
 
 			conn = controllers.ConnectionManagerV1.getConexion();
 
-			PreparedStatement ps2 = conn.prepareStatement(
-					"insert into centroeducativo.valoracionmateria set id = ?, nombre = ?, acronimo = ?, curso_id = ?");
+			PreparedStatement ps = conn
+					.prepareStatement("insert into centroeducativo.valoracionmateria set id = ?, idProfesor = ?, idEstudiante = ?, idMateria = ?, valoracion = ?");
 
-			ps2.setInt(1, nextId());
+			ps.setInt(1, nextId());
+			
+			ps.setInt(2, val.getIdProfesor().getId());
+			ps.setInt(3, val.getIdEstudiante().getId());
+			ps.setInt(4, val.getIdMateria().getId());
+			ps.setFloat(5, val.getValoracion());
 
-			ps2.setString(2, val.getNombre());
-			ps2.setString(3, val.getAcronimo());
-			ps2.setInt(4, val.getCurso_id());
+			ps.executeUpdate();
 
-			ps2.executeUpdate();
-
-			ps2.close();
+			ps.close();
+			conn.close();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -105,21 +64,23 @@ private static Connection conn = null;
 
 	/**
 	 * 
-	 * @throws NumberFormatException
+	 * @throws NumberForvalException
 	 * @throws SQLException
 	 */
-	public static void update(ValoracionMateria val) throws NumberFormatException, SQLException {
+	public static void update(ValoracionMateria val) throws SQLException {
 		conn = controllers.ConnectionManagerV1.getConexion();
 		PreparedStatement ps = conn.prepareStatement(
-				"update centroeducativo.valoracionmateria set nombre = ?, acronimo = ?, curso_id = ? where id =" + val.getId());
+				"update centroeducativo.valoracionmateria set idProfesor = ?, idEstudiante = ?, idMateria = ?, valoracion = ? where id ="
+						+ val.getId());
 
-		ps.setString(1, val.getNombre());
-		ps.setString(2, val.getAcronimo());
-		ps.setInt(3, val.getCurso_id());
+		ps.setInt(1, val.getIdProfesor().getId());
+		ps.setInt(2, val.getIdEstudiante().getId());
+		ps.setInt(3, val.getIdMateria().getId());
+		ps.setFloat(4, val.getValoracion());
 
 		ps.executeUpdate();
-
 		ps.close();
+		conn.close();
 
 	}
 
@@ -143,28 +104,30 @@ private static Connection conn = null;
 
 	}
 
-	public ValoracionMateria cargarAnteriorRegistro(ValoracionMateria val) {
+	public static ValoracionMateria cargarAnteriorRegistro(ValoracionMateria val) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
-			PreparedStatement ps = conn.prepareStatement(
-					"select * from centroeducativo.valoracionmateria where id < " + val.getId() + " order by id desc limit 1");
+			PreparedStatement ps = conn.prepareStatement("select * from centroeducativo.valoracionmateria where id < "
+					+ val.getId() + " order by id desc limit 1");
 			ResultSet rs = ps.executeQuery();
+			ValoracionMateria v = new ValoracionMateria();
 			if (rs.next()) {
 
-				val.setId(rs.getInt(1));
+				v.setId(rs.getInt(1));
 
-				val.setIdProfesor(rs.getInt(2));
-				val.setIdEstudiante(rs.getInt(3));
-				val.setIdMateria(rs.getInt(4));
-				val.setValoracion(rs.getFloat(5));
+				v.setIdProfesor(introducirProfesor(rs.getInt(2)));
+				v.setIdEstudiante(introducirEstudiante(rs.getInt(3)));
+				v.setIdMateria(introducirMateria(rs.getInt(4)));
+				v.setValoracion(rs.getFloat(5));
+
+				rs.close();
+				ps.close();
+				conn.close();
+				return v;
 
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return val;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -172,28 +135,30 @@ private static Connection conn = null;
 		return null;
 	}
 
-	public ValoracionMateria cargarSiguienteRegistro(ValoracionMateria val) {
+	public static ValoracionMateria cargarSiguienteRegistro(ValoracionMateria val) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
-			PreparedStatement ps = conn.prepareStatement(
-					"select * from centroeducativo.valoracionmateria where id > " + val.getId() + " order by id limit 1");
+			PreparedStatement ps = conn.prepareStatement("select * from centroeducativo.valoracionmateria where id > "
+					+ val.getId() + " order by id limit 1");
 			ResultSet rs = ps.executeQuery();
+			ValoracionMateria v = new ValoracionMateria();
 			if (rs.next()) {
 
-				val.setId(rs.getInt(1));
+				v.setId(rs.getInt(1));
 
-				val.setIdProfesor(rs.getInt(2));
-				val.setIdEstudiante(rs.getInt(3));
-				val.setIdMateria(rs.getInt(4));
-				val.setValoracion(rs.getFloat(5));
+				v.setIdProfesor(introducirProfesor(rs.getInt(2)));
+				v.setIdEstudiante(introducirEstudiante(rs.getInt(3)));
+				v.setIdMateria(introducirMateria(rs.getInt(4)));
+				v.setValoracion(rs.getFloat(5));
+
+				rs.close();
+				ps.close();
+				conn.close();
+				return v;
 
 			}
 
-			rs.close();
-			ps.close();
-			conn.close();
-			return val;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -201,28 +166,28 @@ private static Connection conn = null;
 		return null;
 	}
 
-	public ValoracionMateria cargarUltimoRegistro() {
+	public static ValoracionMateria cargarUltimoRegistro() {
 
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
-			ValoracionMateria val = null;
+			ValoracionMateria v = null;
 			PreparedStatement ps = conn
 					.prepareStatement("select * from centroeducativo.valoracionmateria order by id desc limit 1");
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 
-				val = new ValoracionMateria();
-				val.setId(rs.getInt(1));
-				val.setIdProfesor(rs.getInt(2));
-				val.setIdEstudiante(rs.getInt(3));
-				val.setIdMateria(rs.getInt(4));
-				val.setValoracion(rs.getFloat(5));
-				
-				
+				v = new ValoracionMateria();
+				v.setId(rs.getInt(1));
+
+				v.setIdProfesor(introducirProfesor(rs.getInt(2)));
+				v.setIdEstudiante(introducirEstudiante(rs.getInt(3)));
+				v.setIdMateria(introducirMateria(rs.getInt(4)));
+				v.setValoracion(rs.getFloat(5));
+
 				rs.close();
 				ps.close();
 				conn.close();
-				return val;
+				return v;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -231,27 +196,27 @@ private static Connection conn = null;
 		return null;
 	}
 
-	public ValoracionMateria cargarPrimerRegistro() {
+	public static ValoracionMateria cargarPrimerRegistro() {
 
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
-			ValoracionMateria val = null;
-			PreparedStatement ps = conn.prepareStatement("select * from centroeducativo.valoracionmateria order by id limit 1");
+			ValoracionMateria v = null;
+			PreparedStatement ps = conn
+					.prepareStatement("select * from centroeducativo.valoracionmateria order by id limit 1");
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 
-				val = new ValoracionMateria();
-				val.setId(rs.getInt(1));
-				val.setIdProfesor(rs.getInt(2));
-				val.setIdEstudiante(rs.getInt(3));
-				val.setIdMateria(rs.getInt(4));
-				val.setValoracion(rs.getFloat(5));
-				
+				v = new ValoracionMateria();
+				v.setId(rs.getInt(1));
+				v.setIdProfesor(introducirProfesor(rs.getInt(2)));
+				v.setIdEstudiante(introducirEstudiante(rs.getInt(3)));
+				v.setIdMateria(introducirMateria(rs.getInt(4)));
+				v.setValoracion(rs.getFloat(5));
 
 				rs.close();
 				ps.close();
 				conn.close();
-				return val;
+				return v;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -271,6 +236,7 @@ private static Connection conn = null;
 		}
 		ps.close();
 		rs.close();
+		conn.close();
 		return 1;
 
 	}
@@ -286,10 +252,12 @@ private static Connection conn = null;
 			if (rs.next()) {
 				maxID = rs.getInt(1);
 			}
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return maxID;
 	}
 
@@ -303,11 +271,33 @@ private static Connection conn = null;
 			if (rs.next()) {
 				firstID = rs.getInt(1);
 			}
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return firstID;
+	}
+
+	public static Profesor introducirProfesor(int i) {
+		Profesor p = new Profesor();
+		p.setId(i);
+		return p;
+
+	}
+
+	public static Estudiante introducirEstudiante(int i) {
+		Estudiante e = new Estudiante();
+		e.setId(i);
+		return e;
+
+	}
+
+	public static Materia introducirMateria(int i) {
+		Materia m = new Materia();
+		m.setId(i);
+		return m;
+
 	}
 
 }

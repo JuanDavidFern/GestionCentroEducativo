@@ -39,7 +39,7 @@ public class Ventana extends JFrame {
 		tabedPane.add("Estudiantes", new VentanaGestionEstudiante());
 		tabedPane.add("Profesores", new VentanaGestionProfesor());
 		tabedPane.add("Materias", new VentanaGestionMateria());
-//		tabedPane.add("Valoracion Materia", new VentagaGestionValoracionMateria());
+		tabedPane.add("Valoracion Materia", new VentanaGestionValoracionMateria());
 		this.setContentPane(tabedPane);		
 	}
 

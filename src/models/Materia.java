@@ -29,7 +29,7 @@ public class Materia {
 
 	@Override
 	public String toString() {
-		return "Materia [id=" + id + ", nombre=" + nombre + ", acronimo=" + acronimo + ", curso=" + curso + "]";
+		return "Materia nombre=" + nombre + ", acronimo=" + acronimo + ", curso=" + curso;
 	}
 
 	public int getId() {
@@ -54,6 +54,12 @@ public class Materia {
 
 	public void setAcronimo(String acronimo) {
 		this.acronimo = acronimo;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return this.id == ((Materia)obj).id;
 	}
 
 

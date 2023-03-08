@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import models.Curso;
 import models.Estudiante;
 
 public class ControladorEstudiante {
@@ -306,5 +309,15 @@ public class ControladorEstudiante {
         }
         return firstID;
     }
+    
+    public static List<Estudiante> findAll() {
+		List<Estudiante> lc = new ArrayList<Estudiante>();
+		Estudiante e = cargarPrimerRegistro();
+		do {
+			lc.add(e);
+			e = cargarSiguienteRegistro(e);
+		} while (e != null);
+		return lc;
+	}
 
 }
