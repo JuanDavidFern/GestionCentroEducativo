@@ -189,7 +189,10 @@ public class VentanaGestionCurso extends JPanel {
 		Curso curs = new Curso();
 		curs.setId(Integer.parseInt(this.jtfId.getText()));
 		curs.setDescri(this.jtfDesc.getText());
-		ControladorCurso.guardar(curs);
+		curs = ControladorCurso.guardar(curs);
+		if (curs != null) {
+			cargarUltimoRegistro();
+		}
 
 	}
 
@@ -227,31 +230,20 @@ public class VentanaGestionCurso extends JPanel {
 		}
 	}
 
-	private boolean haySiguienteRegistro() {
-		if (Integer.parseInt(this.jtfId.getText()) < controllers.ControladorCurso.getMaxID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
-	private boolean hayAnteriorRegistro() {
-		if (Integer.parseInt(this.jtfId.getText()) > controllers.ControladorCurso.getFirstID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public void botones() throws NumberFormatException, SQLException {
-		if (!hayAnteriorRegistro()) {
+		Curso c = new Curso();
+		c.setId(Integer.parseInt(this.jtfId.getText()));
+		if (ControladorCurso.cargarAnteriorRegistro(c) == null) {
 			this.btnCargarAnteriorRegistro.setEnabled(false);
 			this.btnCargarPrimerRegistro.setEnabled(false);
 		} else {
 			this.btnCargarAnteriorRegistro.setEnabled(true);
 			this.btnCargarPrimerRegistro.setEnabled(true);
 		}
-		if (!haySiguienteRegistro()) {
+
+		if (ControladorCurso.cargarSiguienteRegistro(c) == null) {
 			this.btnCargarSiguienteRegistro.setEnabled(false);
 			this.btnCargarUltimoRegistro.setEnabled(false);
 		} else {

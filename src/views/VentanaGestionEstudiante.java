@@ -330,7 +330,10 @@ public class VentanaGestionEstudiante extends JPanel {
 		estu.setDireccion(this.jtfdirec.getText());
 		estu.setEmail(this.jtfemail.getText());
 		estu.setTelefono(this.jtftelef.getText());
-		ControladorEstudiante.guardar(estu);
+		estu = ControladorEstudiante.guardar(estu);
+		if (estu != null) {
+			cargarUltimoRegistro();
+		}
 		
 
 	}
@@ -384,31 +387,19 @@ public class VentanaGestionEstudiante extends JPanel {
 		controllers.ControladorEstudiante.delete(estu);
 	}
 
-	private boolean haySiguienteRegistro() {
-		if (Integer.parseInt(this.jtfid.getText()) < controllers.ControladorEstudiante.getMaxID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean hayAnteriorRegistro() {
-		if (Integer.parseInt(this.jtfid.getText()) > controllers.ControladorEstudiante.getFirstID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public void botones() throws NumberFormatException, SQLException {
-		if (!hayAnteriorRegistro()) {
+		Estudiante mat = new Estudiante();
+		mat.setId(Integer.parseInt(this.jtfid.getText()));
+		if (ControladorEstudiante.cargarAnteriorRegistro(mat) == null) {
 			this.btnCargarAnteriorRegistro.setEnabled(false);
 			this.btnCargarPrimerRegistro.setEnabled(false);
 		} else {
 			this.btnCargarAnteriorRegistro.setEnabled(true);
 			this.btnCargarPrimerRegistro.setEnabled(true);
 		}
-		if (!haySiguienteRegistro()) {
+
+		if (ControladorEstudiante.cargarSiguienteRegistro(mat) == null) {
 			this.btnCargarSiguienteRegistro.setEnabled(false);
 			this.btnCargarUltimoRegistro.setEnabled(false);
 		} else {

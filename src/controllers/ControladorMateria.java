@@ -12,30 +12,35 @@ import javax.swing.JOptionPane;
 import models.Curso;
 import models.Estudiante;
 import models.Materia;
+import views.VentanaGestionMateria;
 
 public class ControladorMateria {
 	private static Connection conn = null;
 
-	public static void guardar(Materia mat) {
+	public static Materia guardar(Materia mat) {
 		try {
 
 			if (mat.getId() != 0) {
 				update(mat);
+				return null;
 			} else {
-				guardarNuevo(mat);
+				return guardarNuevo(mat);
 			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return null;
+		
 
 	}
 
 	/**
 	 * 
 	 */
-	private static void guardarNuevo(Materia mat) {
+	private static Materia guardarNuevo(Materia mat) {
 		try {
 
 			conn = controllers.ConnectionManagerV1.getConexion();
@@ -53,11 +58,15 @@ public class ControladorMateria {
 
 			ps.close();
 			conn.close();
-
+			
+			
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return mat;
 
 	}
 
@@ -126,7 +135,9 @@ public class ControladorMateria {
 				return m;
 
 			}
-
+			rs.close();
+			ps.close();
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,7 +169,9 @@ public class ControladorMateria {
 				return m;
 
 			}
-
+			rs.close();
+			ps.close();
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -189,6 +202,9 @@ public class ControladorMateria {
 				conn.close();
 				return mat;
 			}
+			rs.close();
+			ps.close();
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,10 +234,14 @@ public class ControladorMateria {
 				conn.close();
 				return mat;
 			}
+			rs.close();
+			ps.close();
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return null;
 	}
 
@@ -241,44 +261,6 @@ public class ControladorMateria {
 
 	}
 
-	public static int getMaxID() {
-		int maxID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.materia;");
-
-			ResultSet rs = ps.executeQuery();
-
-			if (rs.next()) {
-				maxID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return maxID;
-	}
-
-	public static int getFirstID() {
-		int firstID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.materia;");
-
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				firstID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return firstID;
-	}
-	
 	public static List<Materia> findAll() {
 		List<Materia> lc = new ArrayList<Materia>();
 		Materia ma = cargarPrimerRegistro();

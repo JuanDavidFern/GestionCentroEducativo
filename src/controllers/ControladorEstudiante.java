@@ -15,26 +15,29 @@ import models.Estudiante;
 public class ControladorEstudiante {
 	private static Connection conn = null;
 
-	public static void guardar(Estudiante estu) {
+	public static Estudiante guardar(Estudiante estu) {
 		try {
 
 			if (estu.getId() != 0) {
 				update(estu);
+				return null;
 			} else {
-				guardarNuevo(estu);
+				return guardarNuevo(estu);
 			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return null;
 
 	}
 
 	/**
 	 * 
 	 */
-	private static void guardarNuevo(Estudiante estu) {
+	private static Estudiante guardarNuevo(Estudiante estu) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 			PreparedStatement ps = conn.prepareStatement(
@@ -60,6 +63,8 @@ public class ControladorEstudiante {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return estu;
 
 	}
 
@@ -272,43 +277,6 @@ public class ControladorEstudiante {
 
 	}
 	
-	public static int getMaxID() {
-        int maxID = 0;
-        try {
-        	conn = controllers.ConnectionManagerV1.getConexion();
-        	PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.estudiante;");
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                maxID = rs.getInt(1);
-            }
-            conn.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return maxID;
-    }
-
-    public static int getFirstID() {
-        int firstID = 0;
-        try {
-        	conn = controllers.ConnectionManagerV1.getConexion();
-        	PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.estudiante;");
-
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                firstID = rs.getInt(1);
-            }
-            conn.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return firstID;
-    }
     
     public static List<Estudiante> findAll() {
 		List<Estudiante> lc = new ArrayList<Estudiante>();

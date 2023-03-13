@@ -206,6 +206,15 @@ public class VentanaGestionValoracionMateria extends JPanel {
 		btnNuevo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				jtfId.setText("0");
+				if (jcbMateria.getItemCount() > 0) {
+					jcbMateria.setSelectedIndex(0);
+				}
+				if (jcbEstudiante.getItemCount() > 0) {
+					jcbEstudiante.setSelectedIndex(0);
+				}
+				if (jcbProfesor.getItemCount() > 0) {
+					jcbProfesor.setSelectedIndex(0);
+				}
 				jtfVal.setText("");
 			}
 		});
@@ -238,14 +247,17 @@ public class VentanaGestionValoracionMateria extends JPanel {
 		val.setIdEstudiante((Estudiante) this.jcbEstudiante.getSelectedItem());
 		val.setIdMateria((Materia) this.jcbMateria.getSelectedItem());
 		val.setValoracion(Float.parseFloat(this.jtfVal.getText()));
-		ControladorValoracionMateria.guardar(val);
+		val = ControladorValoracionMateria.guardar(val);
+		if (val != null) {
+			cargarUltimoRegistro();
+		}
 
 	}
 
 	private void delete() {
 		ValoracionMateria val = new ValoracionMateria();
 		val.setId(Integer.parseInt(this.jtfId.getText()));
-		controllers.ControladorValoracionMateria.delete(val);
+		ControladorValoracionMateria.delete(val);
 	}
 
 	private void cargarSiguienteRegistro() {
@@ -287,31 +299,20 @@ public class VentanaGestionValoracionMateria extends JPanel {
 
 	}
 
-	private boolean haySiguienteRegistro() {
-		if (Integer.parseInt(this.jtfId.getText()) < controllers.ControladorValoracionMateria.getMaxID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
-	private boolean hayAnteriorRegistro() {
-		if (Integer.parseInt(this.jtfId.getText()) > controllers.ControladorValoracionMateria.getFirstID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public void botones() throws NumberFormatException, SQLException {
-		if (!hayAnteriorRegistro()) {
+		ValoracionMateria val = new ValoracionMateria();
+		val.setId(Integer.parseInt(this.jtfId.getText()));
+		if (ControladorValoracionMateria.cargarAnteriorRegistro(val) == null) {
 			this.btnCargarAnteriorRegistro.setEnabled(false);
 			this.btnCargarPrimerRegistro.setEnabled(false);
 		} else {
 			this.btnCargarAnteriorRegistro.setEnabled(true);
 			this.btnCargarPrimerRegistro.setEnabled(true);
 		}
-		if (!haySiguienteRegistro()) {
+
+		if (ControladorValoracionMateria.cargarSiguienteRegistro(val) == null) {
 			this.btnCargarSiguienteRegistro.setEnabled(false);
 			this.btnCargarUltimoRegistro.setEnabled(false);
 		} else {

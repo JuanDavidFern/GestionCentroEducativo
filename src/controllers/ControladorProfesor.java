@@ -14,26 +14,29 @@ import models.Profesor;
 public class ControladorProfesor {
 	private static Connection conn = null;
 
-	public static void guardar(Profesor prof) {
+	public static Profesor guardar(Profesor prof) {
 		try {
 
 			if (prof.getId() != 0) {
 				update(prof);
+				return null;
 			} else {
-				guardarNuevo(prof);
+				return guardarNuevo(prof);
 			}
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return null;
 
 	}
 
 	/**
 	 * 
 	 */
-	private static void guardarNuevo(Profesor prof) {
+	private static Profesor guardarNuevo(Profesor prof) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
@@ -60,6 +63,8 @@ public class ControladorProfesor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return prof;
 
 	}
 
@@ -267,42 +272,6 @@ public class ControladorProfesor {
 
 	}
 
-	public static int getMaxID() {
-		int maxID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.profesor;");
-
-			ResultSet rs = ps.executeQuery();
-
-			if (rs.next()) {
-				maxID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return maxID;
-	}
-
-	public static int getFirstID() {
-		int firstID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.profesor;");
-
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				firstID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return firstID;
-	}
 	
 	public static List<Profesor> findAll() {
 		List<Profesor> lc = new ArrayList<Profesor>();

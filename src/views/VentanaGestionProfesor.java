@@ -326,7 +326,10 @@ public class VentanaGestionProfesor extends JPanel {
 		prof.setDireccion(this.jtfdirec.getText());
 		prof.setEmail(this.jtfemail.getText());
 		prof.setTelefono(this.jtftelef.getText());
-		ControladorProfesor.guardar(prof);
+		prof = ControladorProfesor.guardar(prof);
+		if (prof != null) {
+			cargarUltimoRegistro();
+		}
 		
 
 	}
@@ -379,32 +382,20 @@ public class VentanaGestionProfesor extends JPanel {
 		prof.setId(Integer.parseInt(this.jtfid.getText()));
 		controllers.ControladorProfesor.delete(prof);
 	}
-	
-	private boolean haySiguienteRegistro() {
-		if (Integer.parseInt(this.jtfid.getText()) < controllers.ControladorProfesor.getMaxID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
-	private boolean hayAnteriorRegistro() {
-		if (Integer.parseInt(this.jtfid.getText()) > controllers.ControladorProfesor.getFirstID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public void botones() throws NumberFormatException, SQLException {
-		if (!hayAnteriorRegistro()) {
+		Profesor pro = new Profesor();
+		pro.setId(Integer.parseInt(this.jtfid.getText()));
+		if (ControladorProfesor.cargarAnteriorRegistro(pro) == null) {
 			this.btnCargarAnteriorRegistro.setEnabled(false);
 			this.btnCargarPrimerRegistro.setEnabled(false);
 		} else {
 			this.btnCargarAnteriorRegistro.setEnabled(true);
 			this.btnCargarPrimerRegistro.setEnabled(true);
 		}
-		if (!haySiguienteRegistro()) {
+
+		if (ControladorProfesor.cargarSiguienteRegistro(pro) == null) {
 			this.btnCargarSiguienteRegistro.setEnabled(false);
 			this.btnCargarUltimoRegistro.setEnabled(false);
 		} else {

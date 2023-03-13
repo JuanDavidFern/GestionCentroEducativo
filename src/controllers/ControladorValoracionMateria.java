@@ -16,30 +16,29 @@ import models.ValoracionMateria;
 public class ControladorValoracionMateria {
 	private static Connection conn = null;
 
-	public static void guardar(ValoracionMateria val) {
+	public static ValoracionMateria guardar(ValoracionMateria val) {
 		try {
 
 			if (val.getId() != 0) {
 				update(val);
+				return null;
 			} else {
-				guardarNuevo(val);
+				return guardarNuevo(val);
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 
 	}
 
 	/**
 	 * 
 	 */
-	private static void guardarNuevo(ValoracionMateria val) {
+	private static ValoracionMateria guardarNuevo(ValoracionMateria val) {
 		try {
-
-			conn = controllers.ConnectionManagerV1.getConexion();
-
+			conn = ConnectionManagerV1.getConexion();
 			PreparedStatement ps = conn
 					.prepareStatement("insert into centroeducativo.valoracionmateria set id = ?, idProfesor = ?, idEstudiante = ?, idMateria = ?, valoracion = ?");
 
@@ -56,10 +55,10 @@ public class ControladorValoracionMateria {
 			conn.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		return val;
 	}
 
 	/**
@@ -98,7 +97,6 @@ public class ControladorValoracionMateria {
 			conn.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -129,7 +127,6 @@ public class ControladorValoracionMateria {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -160,7 +157,6 @@ public class ControladorValoracionMateria {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -190,7 +186,6 @@ public class ControladorValoracionMateria {
 				return v;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -219,7 +214,6 @@ public class ControladorValoracionMateria {
 				return v;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -241,43 +235,6 @@ public class ControladorValoracionMateria {
 
 	}
 
-	public static int getMaxID() {
-		int maxID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.valoracionmateria;");
-
-			ResultSet rs = ps.executeQuery();
-
-			if (rs.next()) {
-				maxID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return maxID;
-	}
-
-	public static int getFirstID() {
-		int firstID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.valoracionmateria;");
-
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				firstID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return firstID;
-	}
 
 	public static Profesor introducirProfesor(int i) {
 		Profesor p = new Profesor();

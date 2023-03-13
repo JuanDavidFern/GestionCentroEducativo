@@ -32,7 +32,7 @@ public class VentanaGestionMateria extends JPanel {
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JComboBox<Curso> jcb;
-	private JButton btnNewButton;
+	private JButton btnRefresh;
 
 	/**
 	 * Create the panel.
@@ -186,6 +186,9 @@ public class VentanaGestionMateria extends JPanel {
 				jtfId.setText("0");
 				jtfNombre.setText("");
 				jtfAcro.setText("");
+				if (jcb.getItemCount() > 0) {
+					jcb.setSelectedIndex(0);
+				}
 
 			}
 		});
@@ -201,17 +204,15 @@ public class VentanaGestionMateria extends JPanel {
 		});
 		panel.add(btnEliminar);
 
-		btnNewButton = new JButton("Refresh");
-		btnNewButton.addActionListener(new ActionListener() {
+		btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refrescar();
 			}
 		});
 
 		cargarPrimerRegistro();
-		panel.add(btnNewButton);
-
-//		cargarPrimerRegistro();
+		panel.add(btnRefresh);
 
 	}
 
@@ -221,7 +222,10 @@ public class VentanaGestionMateria extends JPanel {
 		mat.setNombre(this.jtfNombre.getText());
 		mat.setAcronimo(this.jtfAcro.getText());
 		mat.setCurso((Curso) this.jcb.getSelectedItem());
-		ControladorMateria.guardar(mat);
+		mat = ControladorMateria.guardar(mat);
+		if (mat != null) {
+			cargarUltimoRegistro();
+		}
 
 	}
 
@@ -273,7 +277,7 @@ public class VentanaGestionMateria extends JPanel {
 		try {
 			botones();
 		} catch (NumberFormatException | SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
@@ -286,39 +290,27 @@ public class VentanaGestionMateria extends JPanel {
 		}
 	}
 
-	private boolean haySiguienteRegistro() {
-		if (Integer.parseInt(this.jtfId.getText()) < controllers.ControladorMateria.getMaxID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean hayAnteriorRegistro() {
-		if (Integer.parseInt(this.jtfId.getText()) > controllers.ControladorMateria.getFirstID()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	public void botones() throws NumberFormatException, SQLException {
-		if (!hayAnteriorRegistro()) {
+		Materia mat = new Materia();
+		mat.setId(Integer.parseInt(this.jtfId.getText()));
+		if (ControladorMateria.cargarAnteriorRegistro(mat) == null) {
 			this.btnCargarAnteriorRegistro.setEnabled(false);
 			this.btnCargarPrimerRegistro.setEnabled(false);
 		} else {
 			this.btnCargarAnteriorRegistro.setEnabled(true);
 			this.btnCargarPrimerRegistro.setEnabled(true);
 		}
-		if (!haySiguienteRegistro()) {
+
+		if (ControladorMateria.cargarSiguienteRegistro(mat) == null) {
 			this.btnCargarSiguienteRegistro.setEnabled(false);
 			this.btnCargarUltimoRegistro.setEnabled(false);
 		} else {
 			this.btnCargarSiguienteRegistro.setEnabled(true);
 			this.btnCargarUltimoRegistro.setEnabled(true);
 		}
+
 	}
-	
 
 //  private int index(JComboBox<Curso> jcb, Curso c) {
 //  Curso c1 = null;

@@ -14,26 +14,28 @@ import models.Curso;
 public class ControladorCurso {
 	private static Connection conn = null;
 
-	public static void guardar(Curso curs) {
+	public static Curso guardar(Curso curs) {
 		try {
 
 			if (curs.getId() != 0) {
 				update(curs);
+				return null;
 			} else {
-				guardarNuevo(curs);
+				return guardarNuevo(curs);
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
+		return null;
 
 	}
 
 	/**
 	 * 
 	 */
-	private static void guardarNuevo(Curso curs) {
+	private static Curso guardarNuevo(Curso curs) {
 		try {
 			conn = controllers.ConnectionManagerV1.getConexion();
 
@@ -50,9 +52,11 @@ public class ControladorCurso {
 			conn.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
+		
+		return curs;
 
 	}
 
@@ -92,7 +96,7 @@ public class ControladorCurso {
 			conn.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
@@ -118,10 +122,11 @@ public class ControladorCurso {
 				conn.close();
 				return c;
 			}
-
-			
+			rs.close();
+			ps.close();
+			conn.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -139,18 +144,20 @@ public class ControladorCurso {
 			ResultSet rs = ps.executeQuery();
 			Curso c = new Curso();
 			if (rs.next()) {
-				
+
 				c.setId(rs.getInt(1));
 				c.setDescri(rs.getString(2));
-				
+
 				rs.close();
 				ps.close();
 				conn.close();
 				return c;
 			}
-
+			rs.close();
+			ps.close();
+			conn.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -172,14 +179,14 @@ public class ControladorCurso {
 				curs.setId(rs.getInt(1));
 				curs.setDescri(rs.getString(2));
 
-				rs.close();
-				ps.close();
-				conn.close();
-				return curs;
+				
 			}
-
+			rs.close();
+			ps.close();
+			conn.close();
+			return curs;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -197,14 +204,14 @@ public class ControladorCurso {
 				curs = new Curso();
 				curs.setId(rs.getInt(1));
 				curs.setDescri(rs.getString(2));
-				rs.close();
-				ps.close();
-				conn.close();
-				return curs;
 			}
+			rs.close();
+			ps.close();
+			conn.close();
+			return curs;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		return null;
@@ -219,7 +226,10 @@ public class ControladorCurso {
 		ResultSet rs = ps.executeQuery();
 
 		if (rs.next()) {
-			return rs.getInt(1) + 1;
+			int maxid = rs.getInt(1) + 1;
+			ps.close();
+			rs.close();
+			return maxid;
 
 		}
 		ps.close();
@@ -228,42 +238,6 @@ public class ControladorCurso {
 
 	}
 
-	public static int getMaxID() {
-		int maxID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select max(ID) FROM centroeducativo.curso;");
-
-			ResultSet rs = ps.executeQuery();
-
-			if (rs.next()) {
-				maxID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return maxID;
-	}
-
-	public static int getFirstID() {
-		int firstID = 0;
-		try {
-			conn = controllers.ConnectionManagerV1.getConexion();
-			PreparedStatement ps = conn.prepareStatement("select min(id) FROM centroeducativo.curso;");
-
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				firstID = rs.getInt(1);
-			}
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return firstID;
-	}
 
 	public static List<Curso> findAll() {
 		List<Curso> lc = new ArrayList<Curso>();

@@ -1,7 +1,6 @@
 package models;
 
 public class Materia {
-
 	private int id;
 	private String nombre;
 	private String acronimo;
@@ -29,7 +28,7 @@ public class Materia {
 
 	@Override
 	public String toString() {
-		return "Materia nombre=" + nombre + ", acronimo=" + acronimo + ", curso=" + curso;
+		return "Materia nombre = " + nombre + ", acronimo = " + acronimo;
 	}
 
 	public int getId() {
